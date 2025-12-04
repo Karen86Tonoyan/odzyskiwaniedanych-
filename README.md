@@ -38,11 +38,9 @@ python recovery.py --scan /path/to/scan --output ./recovered_files
 
 ## Supported File Types
 
-- Images: JPG, PNG, GIF, BMP
-- Documents: PDF, DOC, DOCX, TXT
-- Videos: MP4, AVI, MOV
-- Archives: ZIP, RAR
-- And more...
+- Images: JPG, PNG, GIF
+- Documents: PDF
+- Archives: ZIP
 
 ## How It Works
 

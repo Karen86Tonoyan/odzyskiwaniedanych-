@@ -112,12 +112,15 @@ class DataRecovery:
             # Check for file signatures
             for file_type, sig_info in signatures.items():
                 header = sig_info['header']
+                footer = sig_info.get('footer')
                 
-                # Look for header in the file data
-                offset = data.find(header)
-                if offset != -1:
-                    # Found a potential file
-                    footer = sig_info.get('footer')
+                # Look for all occurrences of this file type
+                search_offset = 0
+                while True:
+                    # Look for header in the file data
+                    offset = data.find(header, search_offset)
+                    if offset == -1:
+                        break  # No more occurrences found
                     
                     if footer:
                         # Look for footer after header
@@ -126,14 +129,22 @@ class DataRecovery:
                             # Extract the file content
                             file_data = data[offset:footer_offset + len(footer)]
                             self._save_recovered_file(file_data, file_type, sig_info['ext'])
+                            search_offset = footer_offset + len(footer)
+                        else:
+                            # No footer found, skip this occurrence
+                            search_offset = offset + len(header)
                     else:
                         # No footer specified, save from header to end
                         file_data = data[offset:]
                         self._save_recovered_file(file_data, file_type, sig_info['ext'])
+                        break  # Only one occurrence possible without footer
         
-        except Exception as e:
-            # Silently skip files that can't be read
+        except (PermissionError, IOError) as e:
+            # Skip files that can't be read due to permissions or I/O errors
             pass
+        except Exception as e:
+            # Log unexpected errors but continue
+            print(f"⚠ Warning: Error scanning {file_path}: {e}")
     
     def _save_recovered_file(self, data, file_type, extension):
         """
