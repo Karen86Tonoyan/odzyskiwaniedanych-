@@ -1,83 +1,51 @@
-# Odzyskiwanie Danych (Data Recovery)
+# Odzyskiwanie Danych
 
-An open-source data recovery tool for recovering deleted files from storage devices.
+> **Educational Python signature-carving utility for selected embedded file formats**
 
-## Features
+This repository contains a small command-line script that scans a file or a
+directory recursively for selected byte signatures and writes extracted byte
+ranges to an output directory. It is a simple file-carving experiment, not a
+replacement for forensic recovery software such as PhotoRec or TestDisk.
 
-- 🔍 Scan storage devices for deleted files
-- 📁 Support for common file types (images, documents, videos)
-- 💾 Simple command-line interface
-- 🔓 Open source and free to use
-- 🚀 Lightweight and fast
+## Supported signatures
 
-## Installation
+`recovery.py` currently recognises:
 
-```bash
-# Clone the repository
-git clone https://github.com/Karen86Tonoyan/odzyskiwaniedanych-.git
-cd odzyskiwaniedanych-
+- JPEG (`jpg`);
+- PNG (`png`);
+- PDF (`pdf`);
+- ZIP (`zip`);
+- GIF (`gif`).
 
-# Install dependencies (if any)
-pip install -r requirements.txt
-```
+For formats with a footer, the script writes data from the header through the
+first matching footer. ZIP output is written from its header to the end of the
+scanned file.
 
-## Usage
+## Use
 
-### Basic File Recovery
-
-```bash
-python recovery.py --scan /path/to/scan --output ./recovered_files
-```
-
-### Command Line Options
-
-- `--scan PATH`: Path to scan for deleted files
-- `--output PATH`: Directory to save recovered files (default: ./recovered_files)
-- `--type TYPE`: File type to recover (e.g., jpg, pdf, txt) - recovers all by default
-- `--help`: Show help message
-
-## Supported File Types
-
-- Images: JPG, PNG, GIF
-- Documents: PDF
-- Archives: ZIP
-
-## How It Works
-
-1. **Scanning**: The tool scans the specified directory or device for file signatures
-2. **Detection**: Identifies deleted files by looking for file headers and footers
-3. **Recovery**: Attempts to recover the file content and save it to the output directory
-
-## Example
+The script uses the Python standard library:
 
 ```bash
-# Scan current directory for deleted JPG images
-python recovery.py --scan . --type jpg
-
-# Scan a specific folder and recover all file types
-python recovery.py --scan /path/to/folder --output ./my_recovered_files
+python recovery.py --scan . --type jpg --output ./recovered_files
 ```
 
-## Limitations
+General form:
 
-⚠️ **Important Notes:**
-- Works best on non-overwritten data
-- Recovery success depends on how recently files were deleted
-- Does not guarantee 100% recovery
-- For physical drive damage, professional tools may be needed
+```text
+python recovery.py --scan PATH [--output DIRECTORY] [--type jpg|png|pdf|zip|gif]
+```
 
-## Contributing
+`example.py` supplies an additional example. Always write output to a different
+location than the scanned source.
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Important limitations
 
-## License
+The program reads files into memory and does not parse filesystems, deleted
+file tables, partitions or fragmented files. It can produce incomplete,
+duplicate or false-positive extracts. Never write to a drive or image that is
+being recovered; make a verified copy and use specialist tools for important
+data or forensic work.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Contribution and licence
 
-## Disclaimer
-
-This tool is provided as-is for educational and recovery purposes. Always backup important data. The authors are not responsible for any data loss or damage.
-
-## Support
-
-For issues and feature requests, please use the GitHub issue tracker.
+See `CONTRIBUTING.md` for contribution guidance. `LICENSE` is MIT.
